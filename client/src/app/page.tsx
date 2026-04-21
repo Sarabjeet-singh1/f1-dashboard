@@ -290,7 +290,7 @@ function RaceBlock() {
 
   return (
     <section className="race-hero">
-      <motion.div className="race-block" initial="hidden" animate="visible" variants={fadeInUp} transition={{ delay: 3.2 }}>
+      <motion.div className="race-block" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeInUp} transition={{ delay: 0.1 }}>
         <div className="race-grid">
           <div className="race-left">
             <div className="race-meta-row">
@@ -322,7 +322,7 @@ function RaceBlock() {
             <div className="countdown-label">Lights Out In</div>
             <div className="countdown">
               {(['d', 'h', 'm', 's'] as const).map((key, i) => (
-                <motion.div key={key} className="cd-cell" initial="hidden" animate="visible" variants={numberCountUp} transition={{ delay: 3.8 + i * 0.15 }}>
+                <motion.div key={key} className="cd-cell" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.35 }} variants={numberCountUp} transition={{ delay: 0.2 + i * 0.06 }}>
                   <div className="cd-num">{countdown[key]}</div>
                   <div className="cd-label">{key === 'd' ? 'Days' : key === 'h' ? 'Hours' : key === 'm' ? 'Mins' : 'Secs'}</div>
                 </motion.div>
@@ -339,13 +339,13 @@ function RaceBlock() {
 function Calendar() {
   return (
     <section className="cal-section">
-      <motion.div className="cal-head" initial="hidden" animate="visible" variants={fadeInUp} transition={{ delay: 3.5 }}>
+      <motion.div className="cal-head" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeInUp} transition={{ delay: 0.1 }}>
         <div className="cal-title">Season <em>Calendar</em></div>
         <div className="cal-meta">23 Rounds · Mar → Dec 2026</div>
       </motion.div>
 
       <div className="cal-strip-wrap">
-        <motion.div className="cal-progress-track" initial="hidden" animate="visible" variants={barGrow} transition={{ delay: 4.2 }}>
+        <motion.div className="cal-progress-track" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.35 }} variants={barGrow} transition={{ delay: 0.2 }}>
           <div className="cal-progress-fill" style={{ width: '13.6%' }} />
         </motion.div>
         <div className="cal-strip">
@@ -354,8 +354,9 @@ function Calendar() {
               key={i}
               className={`cal-round ${race.done ? 'done' : ''} ${race.next ? 'next' : ''}`}
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 4.3 + i * 0.05, duration: 0.4 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ delay: 0.25 + i * 0.03, duration: 0.3 }}
             >
               <div className="cal-rnum">
                 {race.round}
@@ -383,7 +384,8 @@ function DriverRow({ driver, delay }: { driver: typeof DRIVERS_FALLBACK[0]; dela
       className={`driver-row ${driver.pos === 1 ? 'leader' : ''}`}
       style={{ '--team-color': teamColor } as React.CSSProperties}
       initial="hidden"
-      animate="visible"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.35 }}
       variants={slideInLeft}
       transition={{ delay }}
     >
@@ -418,7 +420,8 @@ function ConstructorRow({ con, delay }: { con: typeof CONSTRUCTORS_FALLBACK[0]; 
       className="con-row"
       style={{ '--team-color': teamColor } as React.CSSProperties}
       initial="hidden"
-      animate="visible"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.35 }}
       variants={slideInLeft}
       transition={{ delay }}
     >
@@ -431,7 +434,7 @@ function ConstructorRow({ con, delay }: { con: typeof CONSTRUCTORS_FALLBACK[0]; 
         <div className="con-pts">{con.pts}</div>
       </div>
       <div className="con-bar">
-        <motion.div className="con-bar-fill" style={{ width: `${width}%` }} initial="hidden" animate="visible" variants={barGrow} transition={{ delay: delay + 1 }} />
+        <motion.div className="con-bar-fill" style={{ width: `${width}%` }} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }} variants={barGrow} transition={{ delay: delay + 0.2 }} />
       </div>
     </motion.div>
   );
@@ -444,49 +447,49 @@ function MainGrid({ drivers = DRIVERS_FALLBACK, constructors = CONSTRUCTORS_FALL
       <div className="main-grid">
         {/* Drivers Championship */}
         <div className="col">
-          <motion.div className="col-head" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 4.5 }}>
+          <motion.div className="col-head" initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ delay: 0.1 }}>
             <div className="col-num">§ 01</div>
             <div className="col-name">Drivers&apos; <em>Championship</em></div>
             <div className="col-sub">Top 10 · After 3 Rounds</div>
           </motion.div>
 
-          <motion.div variants={staggerContainer} initial="hidden" animate="visible">
+          <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.15 }}>
             {drivers.map((driver, i) => (
-              <DriverRow key={driver.pos} driver={driver} delay={4.5 + i * 0.08} />
+              <DriverRow key={driver.pos} driver={driver} delay={0.12 + i * 0.05} />
             ))}
           </motion.div>
         </div>
 
         {/* Constructors Championship */}
         <div className="col">
-          <motion.div className="col-head" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 4.5 }}>
+          <motion.div className="col-head" initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ delay: 0.1 }}>
             <div className="col-num">§ 02</div>
             <div className="col-name">Constructors&apos; <em>Cup</em></div>
             <div className="col-sub">All 11 teams · 2026</div>
           </motion.div>
 
-          <motion.div variants={staggerContainer} initial="hidden" animate="visible">
+          <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.15 }}>
             {constructors.map((con, i) => (
-              <ConstructorRow key={con.pos} con={con} delay={4.5 + i * 0.08} />
+              <ConstructorRow key={con.pos} con={con} delay={0.12 + i * 0.05} />
             ))}
           </motion.div>
         </div>
 
         {/* Paddock Intel */}
         <div className="col">
-          <motion.div className="col-head" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 4.5 }}>
+          <motion.div className="col-head" initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ delay: 0.1 }}>
             <div className="col-num">§ 03</div>
             <div className="col-name">Paddock <em>Intel</em></div>
             <div className="col-sub">Last Race · Top Stories</div>
           </motion.div>
 
           <div className="podium-block">
-            <motion.div className="podium-head" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 4.6 }}>
+            <motion.div className="podium-head" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: 0.4 }} transition={{ delay: 0.14 }}>
               Japanese GP · Suzuka · Result
             </motion.div>
-            <motion.div className="podium-list" variants={staggerContainer} initial="hidden" animate="visible">
+            <motion.div className="podium-list" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
               {PODIUM.map((p, i) => (
-                <motion.div key={p.pos} className={`pod-row p${p.pos}`} variants={slideInLeft} transition={{ delay: 4.6 + i * 0.1 }}>
+                <motion.div key={p.pos} className={`pod-row p${p.pos}`} variants={slideInLeft} transition={{ delay: 0.16 + i * 0.06 }}>
                   <div className="pod-badge">P{p.pos}</div>
                   <div>
                     <div className="pod-driver-name">{p.name}</div>
@@ -504,8 +507,9 @@ function MainGrid({ drivers = DRIVERS_FALLBACK, constructors = CONSTRUCTORS_FALL
                 key={i}
                 className={`news-item ${news.lead ? 'lead' : ''}`}
                 initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 4.7 + i * 0.1 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ delay: 0.2 + i * 0.06 }}
               >
                 <div className="news-meta">
                   <span className="news-kicker">{news.kicker}</span>
@@ -535,7 +539,7 @@ function StatsRibbon({ lastUpdated, loading }: { lastUpdated?: Date | null, load
     <section className="stats-ribbon">
       <div className="stats-grid">
         {stats.map((stat, i) => (
-          <motion.div key={i} className="stat" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 5 + i * 0.1 }}>
+          <motion.div key={i} className="stat" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ delay: 0.1 + i * 0.06 }}>
             <div className="stat-label">{stat.label}</div>
             <div className="stat-big" dangerouslySetInnerHTML={{ __html: stat.big }} />
             <div className="stat-sub">{stat.sub}</div>
@@ -555,7 +559,7 @@ function StatsRibbon({ lastUpdated, loading }: { lastUpdated?: Date | null, load
 function Footer() {
   return (
     <div className="footer-wrap">
-      <motion.footer className="footer" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 5.5 }}>
+      <motion.footer className="footer" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, amount: 0.5 }} transition={{ delay: 0.16 }}>
         <div className="f-note">
           For Sarabjeet · eyes only<span className="f-dot" />Lights out and away we go
         </div>

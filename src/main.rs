@@ -44,6 +44,7 @@ struct ConstructorInfo {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[allow(dead_code)]
 struct RaceResult {
     race_name: String,
     date: String,
@@ -51,6 +52,7 @@ struct RaceResult {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[allow(dead_code)]
 struct SessionData {
     session_key: i32,
     session_name: String,
@@ -60,6 +62,7 @@ struct SessionData {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[allow(dead_code)]
 struct Driver {
     driver_number: i32,
     full_name: String,
@@ -77,7 +80,7 @@ struct Position {
 }
 
 
-async fn get_current_standings(State(state): State<SharedState>) -> Result<Json<Vec<DriverStanding>>, StatusCode> {
+async fn get_current_standings(State(_state): State<SharedState>) -> Result<Json<Vec<DriverStanding>>, StatusCode> {
     
     let standings = vec![
         DriverStanding {
