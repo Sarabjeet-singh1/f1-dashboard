@@ -454,6 +454,8 @@ body {
   grid-auto-columns: minmax(132px, 1fr);
   overflow-x: auto;
   scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+  contain: content;
 }
 .cal-strip::-webkit-scrollbar { height: 4px; }
 .cal-strip::-webkit-scrollbar-thumb { background: var(--ink); }
@@ -467,6 +469,12 @@ body {
   display: flex;
   flex-direction: column;
   cursor: default;
+  will-change: transform;
+}
+.cal-round-enter {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: calEnter 0.32s ease-out forwards;
 }
 .cal-round:hover { background: var(--paper-3); }
 .cal-round:last-child { border-right: none; }
@@ -545,6 +553,13 @@ body {
   height: 10px;
   background: var(--gold);
   clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+@keyframes calEnter {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Main Grid */
@@ -856,4 +871,12 @@ body {
   .driver-name { font-size: 14px; }
   .driver-pts { font-size: 17px; }
   .cal-flag-name { font-size: 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cal-round-enter {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }

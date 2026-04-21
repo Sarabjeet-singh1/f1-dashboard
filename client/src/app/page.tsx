@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 
-const API_BASE = 'http://localhost:3001';
+const API_BASE = (process.env.NEXT_PUBLIC_API_BASE_URL || '').replace(/\/$/, '');
+const STANDINGS_API = API_BASE ? `${API_BASE}/api/standings` : '/api/standings';
 
 interface DriverStanding {
   position: number;
@@ -21,14 +22,6 @@ interface DriverStanding {
     nationality: string;
   };
 }
-
-interface RaceInfo {
-  race_name: string;
-  location: string;
-  date: string;
-  winner: string;
-}
-
 
 const TEAMS: Record<string, string> = {
   mercedes: '#27F4D2',
@@ -91,7 +84,7 @@ const CONSTRUCTORS_FALLBACK = [
 
 
 const CALENDAR = [
-  { round: 'R01', flag: '🇦🇳', country: 'Australia', name: 'Albert Park', date: 'Mar 06–08', winner: 'G. Russell', done: true },
+  { round: 'R01', flag: '🇦🇺', country: 'Australia', name: 'Albert Park', date: 'Mar 06–08', winner: 'G. Russell', done: true },
   { round: 'R02', flag: '🇨🇳', country: 'China', name: 'Shanghai', date: 'Mar 13–15', winner: 'K. Antonelli', done: true },
   { round: 'R03', flag: '🇯🇵', country: 'Japan', name: 'Suzuka', date: 'Mar 27–29', winner: 'K. Antonelli', done: true },
   { round: 'R04', flag: '🇺🇸', country: 'USA', name: 'Miami', date: 'May 01–03', winner: null, done: false, next: true },
@@ -204,18 +197,13 @@ function Ticker() {
 
 
 function Hero() {
-  const [greeting, setGreeting] = useState('');
-  const [dateLine, setDateLine] = useState('');
-
-  useEffect(() => {
-    const now = new Date();
-    const h = now.getHours();
-    const g = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
-    setGreeting(`${g}, Sarabjeet`);
-    const D = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-    const M = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-    setDateLine(`${D[now.getDay()]} · ${String(now.getDate()).padStart(2, '0')} ${M[now.getMonth()]} · ${now.getFullYear()}`);
-  }, []);
+  const [now] = useState(() => new Date());
+  const h = now.getHours();
+  const g = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  const greeting = `${g}, Sarabjeet`;
+  const D = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+  const M = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  const dateLine = `${D[now.getDay()]} · ${String(now.getDate()).padStart(2, '0')} ${M[now.getMonth()]} · ${now.getFullYear()}`;
 
   return (
     <section className="hero">
@@ -350,13 +338,10 @@ function Calendar() {
         </motion.div>
         <div className="cal-strip">
           {CALENDAR.map((race, i) => (
-            <motion.div
+            <div
               key={i}
-              className={`cal-round ${race.done ? 'done' : ''} ${race.next ? 'next' : ''}`}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ delay: 0.25 + i * 0.03, duration: 0.3 }}
+              className={`cal-round cal-round-enter ${race.done ? 'done' : ''} ${race.next ? 'next' : ''}`}
+              style={{ animationDelay: `${120 + i * 20}ms` }}
             >
               <div className="cal-rnum">
                 {race.round}
@@ -367,7 +352,7 @@ function Calendar() {
               <div className="cal-flag-name">{race.name}</div>
               <div className="cal-date">{race.date}</div>
               {race.winner && <div className="cal-winner">{race.winner}</div>}
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
@@ -576,13 +561,12 @@ export default function Home() {
   const [drivers, setDrivers] = useState(DRIVERS_FALLBACK);
   const [constructors, setConstructors] = useState(CONSTRUCTORS_FALLBACK);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${API_BASE}/api/standings`);
+        const response = await fetch(STANDINGS_API);
         if (!response.ok) throw new Error('Failed to fetch');
         
         const data: DriverStanding[] = await response.json();
@@ -618,10 +602,8 @@ export default function Home() {
         setDrivers(transformedDrivers);
         setConstructors(transformedConstructors);
         setLastUpdated(new Date());
-        setError(null);
       } catch (err) {
         console.warn('Using fallback data - API unavailable:', err);
-        setError('Using cached data');
       } finally {
         setLoading(false);
       }

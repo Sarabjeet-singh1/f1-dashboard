@@ -516,8 +516,10 @@ async fn main() {
         .layer(cors)
         .with_state(state);
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3001").await.unwrap();
-    tracing::info!("F1 API server running on http://0.0.0.0:3001");
+    let port = std::env::var("PORT").unwrap_or_else(|_| "3001".to_string());
+    let addr = format!("0.0.0.0:{port}");
+    let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
+    tracing::info!("F1 API server running on http://{addr}");
 
     axum::serve(listener, app).await.unwrap();
 }
